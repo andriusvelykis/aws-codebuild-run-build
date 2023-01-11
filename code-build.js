@@ -154,6 +154,8 @@ function githubInputs() {
   const projectName = core.getInput("project-name", { required: true });
   const { owner, repo } = github.context.repo;
   const { payload } = github.context;
+  const sourceVersionOverride =
+      core.getInput("source-version-override", { required: false }) || undefined;
   // The github.context.sha is evaluated on import.
   // This makes it hard to test.
   // So I use the raw ENV.
@@ -161,9 +163,10 @@ function githubInputs() {
   // the GITHUB_SHA value is NOT the correct value.
   // See: https://github.com/aws-actions/aws-codebuild-run-build/issues/36
   const sourceVersion =
-    process.env[`GITHUB_EVENT_NAME`] === "pull_request"
-      ? (((payload || {}).pull_request || {}).head || {}).sha
-      : process.env[`GITHUB_SHA`];
+      sourceVersionOverride ||
+        (process.env[`GITHUB_EVENT_NAME`] === "pull_request"
+          ? (((payload || {}).pull_request || {}).head || {}).sha
+          : process.env[`GITHUB_SHA`]);
 
   assert(sourceVersion, "No source version could be evaluated.");
   const buildspecOverride =

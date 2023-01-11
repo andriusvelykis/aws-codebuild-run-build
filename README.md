@@ -31,6 +31,8 @@ The only required input is `project-name`.
 1. **image-override** (optional) :
    The name of an image for this build that overrides the one specified
    in the build project.
+1. **source-version-override** (optional) :
+   The SHA of source version that overrides the GITHUB_SHA.
 1. **env-vars-for-codebuild** (optional) :
    A comma-separated list of the names of environment variables
    that the action passes from GitHub Actions to CodeBuild.
@@ -225,11 +227,11 @@ plus any environment variables that you specified in the `evn-passthrough` input
 Regardless of the project configuration in CodeBuild or GitHub Actions,
 we always pass the following parameters and values to CodeBuild in the StartBuild API call.
 
-| CodeBuild value          | GitHub value                           |
-| ------------------------ | -------------------------------------- |
-| `sourceVersion`          | The commit that triggered the workflow |
-| `sourceTypeOverride`     | The string `'GITHUB'`                  |
-| `sourceLocationOverride` | The `HTTPS` git url for `context.repo` |
+| CodeBuild value          | GitHub value                                                          |
+| ------------------------ |-----------------------------------------------------------------------|
+| `sourceVersion`          | The commit that triggered the workflow or the source-version-override |
+| `sourceTypeOverride`     | The string `'GITHUB'`                                                 |
+| `sourceLocationOverride` | The `HTTPS` git url for `context.repo`                                |
 
 ### What we did not do
 
