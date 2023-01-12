@@ -8,7 +8,7 @@ const cb = require("./code-build");
 const assert = require("assert");
 const yargs = require("yargs");
 
-const { projectName, buildspecOverride, computeTypeOverride, environmentTypeOverride, imageOverride, envPassthrough, remote } = yargs
+const { projectName, buildspecOverride, computeTypeOverride, environmentTypeOverride, imageOverride, sourceVersionOverride, envPassthrough, remote } = yargs
   .option("project-name", {
     alias: "p",
     describe: "AWS CodeBuild Project Name",
@@ -35,6 +35,11 @@ const { projectName, buildspecOverride, computeTypeOverride, environmentTypeOver
     describe: "The name of an image for this build that overrides the one specified in the build project.",
     type: "string",
   })
+  .option("source-version-override", {
+    alias: "v",
+    describe: "SHA to override source version",
+    type: "string",
+  })
   .option("env-vars-for-codebuild", {
     alias: "e",
     describe: "List of environment variables to send to CodeBuild",
@@ -52,11 +57,12 @@ const BRANCH_NAME = uuid();
 const params = cb.inputs2Parameters({
   projectName,
   ...githubInfo(remote),
-  sourceVersion: BRANCH_NAME,
+  sourceVersion: sourceVersionOverride || BRANCH_NAME,
   buildspecOverride,
   computeTypeOverride,
   environmentTypeOverride,
   imageOverride,
+  sourceVersionOverride,
   envPassthrough,
 });
 
